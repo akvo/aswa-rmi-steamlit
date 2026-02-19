@@ -66,61 +66,8 @@ def render_map(df: pd.DataFrame, allow_empty: bool = False):
             mayor if pd.notnull(mayor) and str(mayor).strip() != "" else "N/A"
         )
 
-        tooltip_html = f"""
-        <div style="font-family: 'Inter', sans-serif; min-width: 250px;">
-            <b style="font-size: 1.1rem; color: #0f172a;">
-                {row['healt_centre']}
-            </b>
-            <div style="margin-top: 8px; font-size: 0.9rem; color: #475569;
-                        line-height: 1.5;">
-                <span style="display: flex; justify-content: space-between;">
-                    <span>Island:</span> <b>{row['island']}</b>
-                </span>
-                <span style="display: flex; justify-content: space-between;">
-                    <span>Type:</span> <b>{hc_type}</b>
-                </span>
-                <span style="display: flex; justify-content: space-between;">
-                    <span>Date:</span> <span>{date_str}</span>
-                </span>
-                <hr style="border: 0; border-top: 1px solid #e2e8f0;
-                           margin: 8px 0;">
-
-                <div style="display: grid; grid-template-columns: auto 1fr;
-                            gap: 4px; margin-bottom: 8px;">
-                    <span style="color: #64748b; font-size: 0.85rem;">
-                        Health Asst:
-                    </span>
-                    <b style="text-align: right; font-size: 0.9rem;">{ha}</b>
-
-                    <span style="color: #64748b; font-size: 0.85rem;">
-                        MHD Aide:
-                    </span>
-                    <b style="text-align: right; font-size: 0.9rem;">{mhd}</b>
-
-                    <span style="color: #64748b; font-size: 0.85rem;">
-                        Mayor:
-                    </span>
-                    <b style="text-align: right; font-size: 0.9rem;">
-                        {mayor}
-                    </b>
-                </div>
-
-                <hr style="border: 0; border-top: 1px solid #e2e8f0;
-                           margin: 8px 0;">
-                <span style="display: flex; justify-content: space-between;
-                             align-items: center;">
-                    <span style="font-weight: 600;">Score:</span>
-                    <b style="color: {color}; font-size: 1.1rem;">
-                        {row.get('score', 'N/A')}
-                    </b>
-                </span>
-            </div>
-        </div>
-        """
-
         folium.Marker(
             location=[row["latitude"], row["longitude"]],
-            popup=folium.Popup(tooltip_html, max_width=300),
             tooltip=row["healt_centre"],
             icon=folium.Icon(color=color, icon="info-sign"),
         ).add_to(m)
@@ -131,9 +78,6 @@ def render_map(df: pd.DataFrame, allow_empty: bool = False):
         width="100%",
         height=800,
         key="main_map",
-        returned_objects=[
-            "last_object_clicked",
-            "last_object_clicked_tooltip",
-        ],
+        returned_objects=["last_object_clicked_tooltip"],
     )
     return output

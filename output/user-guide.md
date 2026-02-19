@@ -19,15 +19,17 @@
 - **Click a Marker**: A popup will appear showing:
     - Name and Island
     - Facility Type (e.g., Dispensary)
-    - Health Assistant Name
-    - Latest Score and Date
-- **View Details**: When a marker is selected, a "View Details" button appears at the bottom of the screen. Click this to open the full analysis view.
+    - **Staffing**: Health Assistant and MHD CD Aide names.
+    - **Leadership**: Mayor name.
+    - Latest Score and Date.
+- **View Details**: Inside the popup, click the **"View Details ➝"** button to open the full analysis modal.
 
-### 2.3 Detail Drawer
-- Sliding in from the right, this panel shows:
+### 2.3 Detail Modal
+- A centered overlay displays:
+    - **Facility Summary**: Aligned with the map popup, showing all location and staff details.
     - **Trend Chart**: How the facility's score has changed over time.
     - **History Log**: A table of all past reports.
-- **Close**: Click the "Close Drawer" button to return to the full map view.
+- **Close**: Click the "Close Details" button or the "X" in the top right to return to the full map view.
 
 ## 3. Analytics Tools
 

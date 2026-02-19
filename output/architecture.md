@@ -10,7 +10,7 @@ graph TD
     A[Main App: main.py] --> B[Sidebar: components/filters.py]
     A --> C[Map View: components/map_view.py]
     A --> D[Floating UI: components/floating_widgets.py]
-    A --> E[Detail Drawer: components/detail_drawer.py]
+    A --> E[Detail Modal: components/detail_modal.py]
     C --> F[Folium Map Layer]
     C --> G[Markers & Popups]
     D --> H[Floating Metrics (Top Left)]
@@ -23,7 +23,7 @@ graph TD
 - **Floating Widgets (`floating_widgets.py`)**:
     - `render_floating_metrics`: Displays high-level stats (Total Centers, Avg Score) over the map.
     - `render_floating_analytics_tray`: Renders the national trend chart at the bottom of the page.
-- **Detail Drawer (`detail_drawer.py`)**: A side-panel overlay that appears only when `st.session_state.selected_center` is set. It shows facility-specific history.
+- **Detail Modal (`detail_modal.py`)**: A centered modal overlay (via `@st.dialog`) that appears when `st.session_state.detail_center` is set. It shows facility-specific history and analytics.
 
 ## 3. Data Flow & State Management
 
@@ -34,8 +34,9 @@ graph TD
 4. **Render**: `filtered_df` is passed to Map, Metrics, and Analytics Tray.
 
 ### 3.2 Interaction State
-- `st.session_state.preview_center`: Set when a user clicks a marker. Triggers the "View Details" button appearance.
-- `st.session_state.selected_center`: Set when user clicks "View Details". Triggers the **Detail Drawer** to open.
+- `st.query_params.selected_center`: The primary entrance for direct drawer navigation from the map popup.
+- `st.session_state.detail_center`: Set either by query params or internal logic. Triggers the **Detail Modal** to open.
+- `st.session_state.preview_center`: (Legacy/Fallback) Set when a user clicks a marker to track the active popup.
 
 ## 4. UI/UX Specifications
 - **Theme**: Light Mode "Professional".

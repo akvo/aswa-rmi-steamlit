@@ -17,7 +17,7 @@ The Republic of the Marshall Islands (RMI) Ministry of Health needs a clear, vis
 ## 4. Core Features (PoC Scope)
 - **Interactive Map**: Display all health centers on a map of RMI.
     - Color-coded markers based on Health Center Type (Main vs. Other) or Score status.
-    - Tooltips displaying key info (Name, Island, Staff, Mayor, Score, Date).
+    - Rich popups displaying key info (Name, Island, Staff, Mayor, Score, Date) and a **"View Details" button**.
 - **Time-Series Performance**: Line charts showing the evolution of 'Score' from 2022 to 2026.
 - **Filtering**: Ability to filter the view by Island or Health Center Type.
 

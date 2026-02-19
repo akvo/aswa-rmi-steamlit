@@ -8,8 +8,8 @@ def inject_full_screen_css():
     """
     st.markdown(
         """
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
-              rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter"
+            rel="stylesheet">
         <style>
             /* Global Font */
             html, body, [data-testid="stAppViewContainer"] {
@@ -68,35 +68,6 @@ def inject_full_screen_css():
                 letter-spacing: 0.05em;
                 margin-bottom: 0.25rem;
                 color: #475569; /* Slate-600 */
-            }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
-
-
-def inject_drawer_css():
-    """
-    CSS for the sliding detail drawer (Frosted White).
-    """
-    st.markdown(
-        """
-        <style>
-            .detail-drawer {
-                position: fixed;
-                right: 0;
-                top: 0;
-                height: 100vh;
-                width: 420px;
-                background: rgba(255, 255, 255, 0.9);
-                backdrop-filter: blur(24px);
-                z-index: 1000;
-                border-left: 1px solid rgba(15, 118, 110, 0.1);
-                padding: 2.5rem 2rem;
-                overflow-y: auto;
-                color: #1e293b;
-                box-shadow: -10px 0 30px rgba(0, 0, 0, 0.03);
-                transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             }
         </style>
         """,

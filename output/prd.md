@@ -11,7 +11,7 @@ The **RMI Health Dashboard** provides a professional, high-fidelity spatial inte
 - **National Overview**: Immediate view of the entire archipelago with high-level metrics (Total Centers, Global Avg).
 - **Geographic Exploration**: Pan/Zoom the "Blue Map" to clusters of atolls.
 - **Preview & Context**: Click a marker to see a quick popup summary (Name, Assistant, Type, Score).
-- **Deep Dive**: Click "View Details" to open the **Detail Drawer** for historical trends and comparative analytics.
+- **Deep Dive**: Click "View Details" to open the **Detail Modal** for historical trends and comparative analytics.
 - **National Analysis**: Scroll below the map to see the **National Performance Trends** integrated section.
 
 ## 4. Functional Requirements
@@ -34,11 +34,13 @@ The **RMI Health Dashboard** provides a professional, high-fidelity spatial inte
     - **Health Assistant** Name
     - **Date** (Formatted Month Day, Year)
     - **Score** (Colored)
+    - **"View Details" Link/Button**: A clickable element to trigger the detail view.
 
 ### 4.3 Interaction Flow (Preview -> Detail)
-- **FR-07**: **Preview State**: When a marker is clicked, a "View Details" button must appear (Toast/Floating) at the bottom of the screen.
-- **FR-08**: **Detail State**: Clicking "View Details" must open the **Detail Drawer** sliding in from the right.
-- **FR-09**: The Detail Drawer must display:
+- **FR-07**: **Interaction Trigger**: The "View Details" button inside the map marker popup must trigger the **Detail Modal** (implemented via `st.dialog`) for that center.
+- **FR-07a**: The transition must use `st.session_state` to track the "active dialog" center and trigger the dialog function on app rerun.
+- **FR-08**: **Detail State**: The modal must display with `width="large"` to ensure analytics charts are readable.
+- **FR-09**: The Detail Modal must display:
     - Facility Header (Name, Island, Type)
     - Key Metrics (Latest Score, Trend vs Previous)
     - Trend Chart (Score over Time)
@@ -52,7 +54,13 @@ The **RMI Health Dashboard** provides a professional, high-fidelity spatial inte
 - **FR-12**: Sidebar must contain multi-select filters for **Atoll/Island** and **Health Centre Type**.
 - **FR-13**: Filters must default to "Empty" (implying All/None selected logic handles full data display).
 
-## 5. Non-Functional Requirements
+## 5. Technical Details
+- **State Management**: Use `st.session_state.preview_center` to store the name of the health center returned by `st_folium['last_object_clicked_tooltip']`.
+- **UI Trigger**: A floating `st.button` will be displayed when `preview_center` is active.
+- **Folium Ingestion**: The marker popup HTML in `map_view.py` will be updated to include a CSS-styled "View Details" button for visual continuity.
+- **Reruns**: The transition from map click to floating button display requires a Streamlit rerun, which is automatically triggered by `st_folium`.
+
+## 6. Non-Functional Requirements
 - **NFR-01**: **Theme**: Application must use **Professional Light Mode**.
     - Primary: Teal (`#0d9488`)
     - Secondary: Slate (`#475569`)

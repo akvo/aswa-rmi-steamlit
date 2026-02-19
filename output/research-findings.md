@@ -1,44 +1,19 @@
-# Research Findings: Hybrid Maps-First Dashboard
+# Research Findings: Map Marker "View Details"
 
-## 1. User Research & Layout Selection
-- **The Challenge**: Users wanted a "Maps-First" experience but found full-screen overlays for filters less intuitive than the native Streamlit sidebar.
-- **The Solution**: A **Hybrid Layout** was identified as the ideal balance.
-    - **Persistent Filters**: Kept in the `st.sidebar` for structured navigation.
-    - **Immersive Exploration**: The main canvas is a full-bleed map explorer.
-    - **Float-Over Analysis**: Real-time metrics and trend charts occupy the map foreground as glassmorphism overlays.
+## Folium-Streamlit Interaction
+Folium popups are rendered as static HTML on the client side. `st_folium` provides bi-directional communication, but only for certain events (map clicks, marker clicks, zoom, etc.).
 
-## 2. Technical Feasibility
-- **Streamlit Wide Mode**: Essential for providing the map with 100% of usable width.
-- **Glassmorphism (CSS Blur)**: Successfully tested using `backdrop-filter: blur(12px)`. This ensures that data overlays don't feel like "interruptions" but rather "contextual layers" on top of the geography.
-- **Folium Interaction**: bi-directional communication (marker click -> sidebar drawer) is stable via `st.session_state`.
+### Findings
+1. **Popup Limitations**: Standard Folium popups cannot execute Python code or directly trigger Streamlit reruns via HTML buttons/links without complex JavaScript bridges.
+2. **Marker Click Event**: `st_folium` consistently returns the `last_object_clicked_tooltip` (Health Centre Name) when a marker is clicked.
+3. **State Management**: We can leverage `st.session_state` to track the "previewed" facility vs the "selected" (drawer open) facility.
 
-## 3. Component Hierarchy
-1.  **Primary**: Folkum Map (CartoDB Dark Matter).
-2.  **Functional**: Sidebar Filters.
-3.  **Informational**: Floating scorecards and Trend Tray.
-4.  **Drill-down**: Right-side Detail Drawer.
+### Proposed Strategy (Hybrid Approach)
+To satisfy the user's request for a button "there" while ensuring functionality:
+1. **Visual Guide**: Include a styled "View Details" element in the Folium popup.
+2. **Immediate Action**: When a marker is clicked, the `st_folium` component notifies the backend.
+3. **Floating Trigger**: A prominent, styled floating button (using Streamlit's `st.button`) will appear at the bottom of the map when a facility is "previewed" (i.e., its popup is open).
+4. **Transition**: Clicking this floating button will set `st.session_state.selected_center`, which opens the existing `DetailDrawer`.
 
-## 4. Data Quality & Structure
-
-### Dataset Overview
-- **Source**: `transformers/RMI_OUTPUT.csv`
-- **Total Records**: 78
-- **Columns**: `id`, `island`, `healt_centre`, `latitude`, `longitude`, `health_centre_type`, `health_assistans`, `mhd_cd_aide`, `mayor`, `date`, `score`
-
-### Critical Findings
-- **Missing Coordinates**: 10 records (~12%) have missing 'latitude' and 'longitude'.
-    - *Impact*: These health centers cannot be plotted on the map.
-    - *Mitigation*: We will exclude these from the map view but include them in the data tables and charts.
-- **Data Types**:
-    - `date`: String format (YYYY-MM-DD), needs parsing.
-    - `score`: Float, range seems to be 0-100 (needs validation, max seen 88, min 18).
-    - `latitude`/`longitude`: Float.
-
-## 2. Technical Constraints
-- **Streamlit**: Selected framework.
-- **Mapping**: `folium` via `streamlit-folium` is recommended over `st.map` because we need rich tooltips (HTML support) and custom markers (colors based on logic), which `st.map` (deck.gl) handles less flexibly for simple setups without more complex layer configuration.
-- **Charts**: `altair` or `plotly` are good candidates. `st.line_chart` is simplest but `altair` offers better customization for tooltips and interactivity.
-
-## 3. Refined Requirements (Additions to PRD)
-- **FR-03 (Refined)**: System must filter out records with null lat/long *before* passing data to the map component.
-- **FR-New**: Dashboard should display a "Data Completeness" metric or warning indicating how many centers are missing geolocation.
+### Chart Integration
+The chart for the selected marker is already implemented in `components/detail_drawer.py`. By opening the drawer, we fulfill the requirement to "show the chart of selected marker".

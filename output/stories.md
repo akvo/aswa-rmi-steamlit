@@ -20,24 +20,26 @@
     - Map tiles are set to OpenStreetMap.
     - Default Zoom Level is 6.
 
-**Story 2.2: Rich Popups & Preview**
+**Story 2.2: Rich Popups & View Details Trigger**
 - **As a** User,
-- **I want** to click a marker and see a quick summary (Name, Assistant, Type, Score),
-- **So that** I can scan facilities without losing my map context.
+- **I want** to click a marker and see a quick summary (Name, Assistant, Type, Score) and a "View Details" button,
+- **So that** I can trigger the deep dive directly from the marker.
 - **Acceptance Criteria**:
     - Clicking a marker opens a Folium Popup.
     - Popup contains: Name, Island, Type, Health Assistant, Date, Score.
-    - Clicking a marker ALSO triggers a "View Details" button to appear at the bottom.
+    - Popup includes a styled "View Details" button/link.
+    - Clicking the "View Details" link in the popup triggers the Detail Modal.
 
 ## Epic 3: Deep Dive Analytics
-**Story 3.1: Detail Drawer**
+**Story 3.1: Detail Modal**
 - **As a** User,
-- **I want** to click "View Details" to slide out a side panel,
-- **So that** I can view historical performance for a specific center.
+- **I want** to click "View Details" to open a centered modal overlay,
+- **So that** I can view historical performance for a specific center with high focus.
 - **Acceptance Criteria**:
-    - Clicking "View Details" opens the Detail Drawer.
-    - Drawer covers ~400px on the right.
-    - Drawer shows: Comparison Metrics, Score Trend Chart, Historical Data Table.
+    - Clicking "View Details" triggers a centered Modal (`st.dialog`).
+    - Modal width is "large".
+    - Modal content includes: Facility Header, Key Metrics, Trend Chart, Historical Data Table.
+    - Modal is dismissible via "X", ESC, or "Close" button.
 
 **Story 3.2: Integrated National Trends**
 - **As a** User,

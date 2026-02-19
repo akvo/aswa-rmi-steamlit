@@ -1,54 +1,24 @@
-# UX Design Specification: RMI Health Dashboard (PoC)
+# UX Design Specification: Detail Modal
 
-## 1. Design Philosophy
-**"Clarity & Geospatial Context"**
-The interface prioritizes map visibility ("Blue Map") while using a clean, professional color palette (Teal/Slate). The interaction model separates "Browsing" (Map) from "Analysis" (Drawer/Tray).
+## 1. Interaction Pattern
+The transition from map marker to detail view follows a "Focused Drill-down" pattern.
+1. **Trigger**: User clicks "View Details" in the marker popup.
+2. **Transition**: The page reloads (standard Streamlit behavior for query params) and the map is overlaid with a centered modal.
+3. **Escapability**: The modal can be closed via the "X" button, ESC key, or a prominent "Close" button at the bottom.
 
-## 2. Visual Identity
+## 2. Visual Layout (st.dialog "large")
+- **Header**: Large Teal Title (`#0d9488`) with the Health Center Name.
+- **Top Row**: Glassmorphism metrics for "Latest Score" and "Trend".
+- **Body**:
+    - **Comparative Analytics**: A wide-format chart for historical trends.
+    - **Historical Log**: A clean data table for reference.
+- **Footer**: A secondary "Close" button for convenience.
 
-### 2.1 Color Palette
-- **Primary (Teal)**: `#0d9488` (Tailwind teal-600) - Used for Headers, Key Metrics, Active States.
-- **Secondary (Slate)**: `#64748b` (Tailwind slate-500) - Used for Body text, Labels.
-- **Backgrounds**:
-    - **Map**: OpenStreetMap (Standard Blue/Green/White).
-    - **Overlays**: White (`#ffffff`) with 90% opacity and 24px Blur (Glassmorphism).
-    - **Drawer**: Light Slate (`#f8fafc`).
+## 3. Design Tokens
+- **Backdrop**: Semi-transparent slate (`rgba(15, 23, 42, 0.4)`) with high blur to maintain spatial context while focusing the modal.
+- **Borders**: Subtle teal accents (`#99f6e4`) to match the medical theme.
+- **Typography**: Inter (sans-serif) for high legibility.
 
-### 2.2 Typography
-- **Font Face**: `Inter`, sans-serif.
-- **Weights**:
-    - **Headers**: 600 (Semi-Bold).
-    - **Body**: 400 (Regular).
-    - **Metrics**: 700 (Bold).
-
-## 3. Layout Dimensions
-- **Sidebar**: Standard Streamlit width (approx 300px).
-- **Map**: Full viewport height/width (padding removed via CSS).
-- **Detail Drawer**: Fixed width `420px`, right-aligned, slide-in animation.
-- **Metrics Widget**: Top-left, fixed position `top: 1.5rem, left: 24rem` (offset for sidebar).
-
-## 4. Component Specs
-
-### 4.1 Map Markers
-- **Type**: Folium Icon (`info-sign`).
-- **Colors**:
-    - `darkgreen`: Score ≥ 80
-    - `orange`: Score 50-79
-    - `red`: Score < 50
-
-### 4.2 Popups
-- **Content**: HTML-based.
-- **Style**: Min-width 200px, Inter font, 14px base size.
-- **Fields**: Name (Bold), Island, Type, Assistant, Date, Score.
-
-### 4.3 Analytics Tray
-- **Location**: Bottom of page flow (below map fold).
-- **Structure**:
-    - Header: "National Performance Trends" (Teal H3).
-    - Content: Altair Chart (Full width).
-
-## 5. Interaction Patterns
-- **Hover**: Map markers show tooltip name.
-- **Click (Map)**: Opens Popup -> Shows "View Details" button toast.
-- **Click (View Details)**: Opens Detail Drawer -> Update URL param (optional) -> Rerender.
-- **Click (Close Drawer)**: Closes drawer, returns to map view.
+## 4. Accessibility
+- Keyboard support (ESC to close) is handled natively by `st.dialog`.
+- High contrast ratios for metric text.

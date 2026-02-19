@@ -6,4 +6,5 @@ black
 flake8
 folium
 streamlit-folium
+streamlit-modal
 altair
