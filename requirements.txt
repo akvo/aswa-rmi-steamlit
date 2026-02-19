@@ -1,0 +1,9 @@
+streamlit
+pandas
+numpy
+watchdog
+black
+flake8
+folium
+streamlit-folium
+altair
