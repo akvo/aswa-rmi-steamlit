@@ -25,10 +25,10 @@ def render_detail_modal(df: pd.DataFrame, center_name: str):
         if st.session_state.get("detail_center"):
             st.session_state.ignored_center = st.session_state.detail_center
         st.session_state.detail_center = None
-        # st.session_state.last_clicked_center = None # Keep this to allow "different" check?
-        # Actually, if we set ignored, we don't need to clear last_clicked.
-        # But if we want to allow re-click LATER, we need to clear ignored somewhere.
-        # Current logic in main.py handles new clicks clearing ignored.
+        # Increment map version to clear selection in Folium
+        st.session_state.map_version += 1
+        # Clear query params to prevent URL re-trigger
+        st.query_params.pop("selected_center", None)
         st.rerun()
 
     with modal.container():
@@ -147,4 +147,8 @@ def render_detail_modal(df: pd.DataFrame, center_name: str):
         ):
             st.session_state.ignored_center = center_name
             st.session_state.detail_center = None
+            # Increment map version to clear selection in Folium
+            st.session_state.map_version += 1
+            # Clear query params to prevent URL re-trigger
+            st.query_params.pop("selected_center", None)
             st.rerun()

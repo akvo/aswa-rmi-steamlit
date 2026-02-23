@@ -45,26 +45,15 @@ def main():
         st.session_state.last_clicked_center = None
     if "ignored_center" not in st.session_state:
         st.session_state.ignored_center = None
-
-    # --- DEBUG DASHBOARD ---
-    with st.expander("🔍 Debugging: State & Params", expanded=False):
-        st.write("Current Query Params:", st.query_params.to_dict())
-        st.write("detail_center:", st.session_state.get("detail_center"))
-    # -----------------------
-
-    # Sync Query Params to State (Direct Navigation)
-    query_params = st.query_params.to_dict()
-    query_center_raw = query_params.get("selected_center")
-
-    if query_center_raw:
-        query_center = urllib.parse.unquote(query_center_raw)
-        if query_center != st.session_state.get("detail_center"):
-            st.session_state.detail_center = query_center
-            # Force modal open for URL triggers
-            Modal(
-                title=f"Details: {query_center}", key=f"modal_{query_center}"
-            ).open()
-            st.rerun()
+    if "map_version" not in st.session_state:
+        st.session_state.map_version = 0
+    if "map_center" not in st.session_state:
+        st.session_state.map_center = None
+    if "map_zoom" not in st.session_state:
+        st.session_state.map_zoom = 6
+    if "rerun_count" not in st.session_state:
+        st.session_state.rerun_count = 0
+    # st.session_state.rerun_count += 1
 
     # Load Data
     if not os.path.exists(DATA_PATH):
@@ -85,29 +74,74 @@ def main():
     avg_score = filtered_df["score"].mean()
     missing_geo = get_missing_geodata_count(filtered_df)
 
-    # Map Layer
-    map_df = get_map_data(filtered_df)
-    with st.spinner("Updating Markers..."):
-        map_data = render_map(map_df)
+    # 1. Sync Query Params to State (Direct Navigation)
+    query_params = st.query_params.to_dict()
+    query_center_raw = query_params.get("selected_center")
 
-    # Handle Marker Clicks (Direct Interaction)
+    if query_center_raw:
+        query_center = urllib.parse.unquote(query_center_raw)
+        if query_center != st.session_state.detail_center:
+            st.session_state.detail_center = query_center
+            # Force modal open for URL triggers
+            Modal(
+                title=f"Details: {query_center}", key=f"modal_{query_center}"
+            ).open()
+            st.rerun()
+
+    # 2. Map Layer
+    map_df = get_map_data(filtered_df)
+    map_key = f"map_v{st.session_state.map_version}"
+    with st.spinner("Updating Markers..."):
+        map_data = render_map(
+            map_df,
+            key=map_key,
+            center=st.session_state.map_center,
+            zoom=st.session_state.map_zoom,
+        )
+
+    # Capture map state for persistence across version resets
+    if map_data:
+        if "center" in map_data:
+            st.session_state.map_center = [
+                map_data["center"]["lat"],
+                map_data["center"]["lng"],
+            ]
+        if "zoom" in map_data:
+            st.session_state.map_zoom = map_data["zoom"]
+
+    # 3. Handle Marker Clicks (Direct Interaction)
     if map_data and map_data.get("last_object_clicked_tooltip"):
         clicked_name = map_data["last_object_clicked_tooltip"]
 
-        # 1. If this center is ignored (just closed), skip
+        # Only open if it's NOT what we just closed and NOT already open
         if clicked_name == st.session_state.get("ignored_center"):
             pass
-        # 2. If it's a new click (different from valid), open it
-        elif clicked_name != st.session_state.get("last_clicked_center"):
-            st.session_state.last_clicked_center = clicked_name
+        elif clicked_name != st.session_state.get("detail_center"):
             st.session_state.detail_center = clicked_name
-            # Clear ignore since we have a valid new action
+            st.session_state.last_clicked_center = clicked_name
             st.session_state.ignored_center = None
             # Force modal open for Click triggers
             Modal(
                 title=f"Details: {clicked_name}", key=f"modal_{clicked_name}"
             ).open()
             st.rerun()
+    elif map_data is not None:
+        # Interaction happened but no marker selected (e.g., background click)
+        # We can clear ignore here to allow re-clicking the marker we just closed
+        st.session_state.ignored_center = None
+        st.session_state.last_clicked_center = None
+
+    # --- DEBUG DASHBOARD (Commented out for production) ---
+    # with st.expander("🔍 Debugging: State & Map Data", expanded=False):
+    #     st.write("detail_center:", st.session_state.get("detail_center"))
+    #     st.write("ignored_center:", st.session_state.get("ignored_center"))
+    #     st.write("map_key:", map_key)
+    #     st.write(
+    #         "map_data (last click):",
+    #         map_data.get("last_object_clicked_tooltip") if map_data else None,
+    #     )
+    #     st.write("Rerun Count:", st.session_state.rerun_count)
+    # -----------------------
 
     # Floating UI Layer (Metrics overlay the map)
     render_floating_metrics(total_centers, avg_score, missing_geo)

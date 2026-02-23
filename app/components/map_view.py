@@ -4,7 +4,13 @@ import pandas as pd
 import streamlit as st
 
 
-def render_map(df: pd.DataFrame, allow_empty: bool = False):
+def render_map(
+    df: pd.DataFrame,
+    allow_empty: bool = False,
+    key: str = "main_map",
+    center: list = None,
+    zoom: int = 6,
+):
     """
     Renders a Folium map with health centers.
 
@@ -28,11 +34,11 @@ def render_map(df: pd.DataFrame, allow_empty: bool = False):
 
     # Create map with standard tiles for 'blue map' aesthetic
     m = folium.Map(
-        location=[center_lat, center_lon],
-        zoom_start=6,  # Increased zoom for better archipelago detail
+        location=center if center else [center_lat, center_lon],
+        zoom_start=zoom if zoom else 6,
         tiles="OpenStreetMap",
         control_scale=True,
-        zoom_control=True,  # Restoring zoom control for better accessibility
+        zoom_control=True,
     )
 
     for _, row in df.iterrows():
@@ -48,11 +54,7 @@ def render_map(df: pd.DataFrame, allow_empty: bool = False):
             color = "red"  # Rose
 
         # Tooltip content
-        date_val = row.get("date")
-        date_str = (
-            date_val.strftime("%b %d, %Y") if pd.notnull(date_val) else "N/A"
-        )
-        hc_type = row.get("health_centre_type", "N/A")
+        # No extra tooltip content needed here as it's handled by healt_centre
 
         # Additional Fields
         ha = row.get("health_assistans", "")
@@ -77,7 +79,6 @@ def render_map(df: pd.DataFrame, allow_empty: bool = False):
         m,
         width="100%",
         height=800,
-        key="main_map",
-        returned_objects=["last_object_clicked_tooltip"],
+        key=key,
     )
     return output
