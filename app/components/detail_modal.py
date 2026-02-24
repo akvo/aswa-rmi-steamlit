@@ -47,19 +47,34 @@ def render_detail_modal(df: pd.DataFrame, center_name: str):
                     font-size: 1rem;
                 }
                 div[role="dialog"][aria-modal="true"] {
-                    width: 850px !important;
-                    max-width: 850px !important;
-                    min-width: 850px !important;
+                    width: 675px !important;
+                    max-width: 675px !important;
+                    min-width: 675px !important;
                 }
                 div[role="dialog"][aria-modal="true"] > div {
-                    width: 850px !important;
-                    max-width: 850px !important;
-                    min-width: 850px !important;
+                    width: 675px !important;
+                    max-width: 675px !important;
+                    min-width: 675px !important;
                 }
                 div[data-testid="stTabs"] {
-                    width: 850px !important;
-                    max-width: 850px !important;
-                    min-width: 850px !important;
+                    width: 675px !important;
+                    max-width: 675px !important;
+                    min-width: 675px !important;
+                }
+                div[role="dialog"][aria-modal="true"] header {
+                    display: flex !important;
+                    flex-direction: row !important;
+                    align-items: center !important;
+                    justify-content: space-between !important;
+                }
+                h2 {
+                    font-size: 1.75rem !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    flex-grow: 1 !important;
+                }
+                hr {
+                    display: none !important;
                 }
             </style>
             """,
@@ -71,34 +86,55 @@ def render_detail_modal(df: pd.DataFrame, center_name: str):
         hc_type = latest.get("health_centre_type", "N/A")
         island = latest["island"]
 
-        st.markdown(f"### {center_name}")
+        with st.container(border=True):
+            col1, col2, col3 = st.columns([1, 1, 1.8])
+            with col1:
+                st.markdown(
+                    "<div style='margin-bottom: 0.5rem;'>"
+                    "<div style='font-size: 0.9rem; color: #6c757d; "
+                    "font-weight: 600; text-transform: uppercase; "
+                    "letter-spacing: 0.5px;'>📍 Location</div>"
+                    "<div style='font-size: 1.1rem; color: #1f2937; "
+                    f"margin-top: 0.2rem;'>{island}</div>"
+                    "</div>",
+                    unsafe_allow_html=True,
+                )
 
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.markdown("**📍 Location**")
-            st.caption(f"{island}")
+            with col2:
+                st.markdown(
+                    "<div style='margin-bottom: 0.5rem;'>"
+                    "<div style='font-size: 0.9rem; color: #6c757d; "
+                    "font-weight: 600; text-transform: uppercase; "
+                    "letter-spacing: 0.5px;'>🏥 Type</div>"
+                    "<div style='font-size: 1.1rem; color: #1f2937; "
+                    f"margin-top: 0.2rem;'>{hc_type}</div>"
+                    "</div>",
+                    unsafe_allow_html=True,
+                )
 
-        with col2:
-            st.markdown("**Type**")
-            st.caption(f"{hc_type}")
+            with col3:
+                ha = latest.get("health_assistans")
+                mayor = latest.get("mayor")
+                staff_info = []
+                if pd.notnull(ha):
+                    staff_info.append(f"Health Assistant: {ha}")
+                if pd.notnull(mayor):
+                    staff_info.append(f"Mayor: {mayor}")
 
-        with col3:
-            st.markdown("**Personnel**")
-            ha = latest.get("health_assistans")
-            mayor = latest.get("mayor")
-            staff_info = []
-            if pd.notnull(ha):
-                staff_info.append(f"HA: {ha}")
-            if pd.notnull(mayor):
-                staff_info.append(f"Mayor: {mayor}")
+                staff_html = "<br>".join(staff_info) if staff_info else "N/A"
+                st.markdown(
+                    "<div style='margin-bottom: 0.5rem;'>"
+                    "<div style='font-size: 0.9rem; color: #6c757d; "
+                    "font-weight: 600; text-transform: uppercase; "
+                    "letter-spacing: 0.5px;'>👥 Personnel</div>"
+                    "<div style='font-size: 1.0rem; color: #1f2937; "
+                    f"margin-top: 0.2rem; line-height: 1.4;'>{staff_html}</div>"
+                    "</div>",
+                    unsafe_allow_html=True,
+                )
 
-            st.caption(
-                "<br>".join(staff_info) if staff_info else "N/A",
-                unsafe_allow_html=True,
-            )
-
-        st.divider()
-
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
         # --- Tabs for Content ---
         tab_overview, tab_history = st.tabs(
             ["📊 Overview & Trends", "📜 Historical Data"]
@@ -113,11 +149,53 @@ def render_detail_modal(df: pd.DataFrame, center_name: str):
 
             m_col1, m_col2 = st.columns(2)
             with m_col1:
-                st.metric("Latest Score", f"{latest_score:.1f}")
+                with st.container(border=True, height=125):
+                    st.markdown(
+                        "<div style='display: flex; flex-direction: column; "
+                        "justify-content: center; align-items: center; "
+                        "height: 90px;'>"
+                        "<div style='font-size: 1.1rem; color: #6c757d; "
+                        "font-weight: 600; margin-bottom: 0.2rem;'>"
+                        "Latest Score</div>"
+                        "<div style='font-size: 2.2rem; color: #1f2937; "
+                        f"font-weight: 700;'>{latest_score:.1f}</div>"
+                        "</div>",
+                        unsafe_allow_html=True,
+                    )
             with m_col2:
-                if prev_score is not None:
-                    delta = latest_score - prev_score
-                    st.metric("Trend", f"{delta:+.1f}", delta_color="normal")
+                with st.container(border=True, height=125):
+                    if prev_score is not None:
+                        delta = latest_score - prev_score
+                        color = (
+                            "#10b981"
+                            if delta > 0
+                            else "#ef4444" if delta < 0 else "#6b7280"
+                        )
+                        st.markdown(
+                            "<div style='display: flex; flex-direction: column; "
+                            "justify-content: center; align-items: center; "
+                            "height: 90px;'>"
+                            "<div style='font-size: 1.1rem; color: #6c757d; "
+                            "font-weight: 600; margin-bottom: 0.2rem;'>"
+                            "Trend</div>"
+                            f"<div style='font-size: 2.2rem; color: {color}; "
+                            f"font-weight: 700;'>{delta:+.1f}</div>"
+                            "</div>",
+                            unsafe_allow_html=True,
+                        )
+                    else:
+                        st.markdown(
+                            "<div style='display: flex; flex-direction: column; "
+                            "justify-content: center; align-items: center; "
+                            "height: 90px;'>"
+                            "<div style='font-size: 1.1rem; color: #6c757d; "
+                            "font-weight: 600; margin-bottom: 0.2rem;'>"
+                            "Trend</div>"
+                            "<div style='font-size: 2.2rem; color: #6b7280; "
+                            "font-weight: 700;'>N/A</div>"
+                            "</div>",
+                            unsafe_allow_html=True,
+                        )
 
             st.markdown("#### Performance Trend")
             render_trend_chart(center_df)
