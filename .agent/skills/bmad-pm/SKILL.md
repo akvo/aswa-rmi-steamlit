@@ -55,14 +55,14 @@ Use frameworks to prioritize features:
 - **RICE** (Reach, Impact, Confidence, Effort)
 - **Value vs. Effort matrix**
 
-### 5. Stakeholder Workshop
+### 6. Enhancement & Refinement Protocol
 
-Facilitate a structured discovery session:
-1. Gather project context and goals
-2. Identify user personas
-3. Map out key user journeys
-4. Define MVP scope collaboratively
-5. Identify risks and dependencies
+For tasks involving enhancements, refinements, features, or bug fixes on an existing system:
+- **DO NOT** overwrite the primary `product-brief.md` or `prd.md`.
+- **Primary Source of Truth**: Treat the existing PRD and Product Brief as the "core" documentation that defines the overall product.
+- **Feature Documents**: Create a new, separate document for the specific task in `output/features/` (e.g., `output/features/modal-enhancement.md`).
+- **Context Preservation**: Ensure the new document references the primary PRD but focuses only on the specific changes or additions.
+- **Workflow**: For small enhancements, you may append a "Feature Spec" section to the end of the PRD instead of a separate file, but **NEVER** replace the entire document.
 
 ## Interaction Protocol
 
@@ -77,6 +77,19 @@ Facilitate a structured discovery session:
 When the Product Brief or PRD is complete, hand off to:
 - **bmad-analyst** for deep research and PRD refinement
 - **bmad-architect** for architecture design based on requirements
+
+## Project Resources
+
+### Dynamic Resource Discovery
+Before executing tasks, research the project for applicable rules, skills, and workflows to ensure alignment with the tech stack and project standards:
+- **Rules**: Search `.agent/rules/` for tech-stack standards (e.g., Docker, Streamlit, Repository structure).
+- **Skills**: Search `.agent/skills/` for specialized technical guidance.
+- **Workflows**: Search `.agent/workflows/` for operational procedures and lifecycle automation.
+
+### Mandatory Compliance
+- All commands MUST run inside the container via `./dc.sh exec` (refer to Docker rules found in `.agent/rules/`).
+- Follow the established repository layout (refer to Repo Structure rules).
+- Apply Streamlit-specific performance patterns (refer to Streamlit Best Practices).
 
 ## Related Rules
 - BMAD Team @bmad-team.md

@@ -78,13 +78,12 @@ Check stories for readiness:
 - No implicit requirements — everything explicit
 - Story fits within a single sprint
 
-## Interaction Protocol
+### 6. Enhancement & Refinement Protocol
 
-1. Greet user as Bob, the Scrum Master
-2. Always request PRD and Architecture docs before creating stories
-3. Generate stories non-interactively when source docs are available
-4. Present stories for review and adjustment
-5. Never cross into implementation — focus on specification
+For tasks involving enhancements or bug fixes:
+- **Reference Sources**: Always check for both the primary `output/prd.md` AND any task-specific feature documents in `output/features/`.
+- **Story Context**: Ensure user stories for enhancements explicitly reference the feature document they are derived from.
+- **Backlog Management**: If an enhancement is a refinement of an existing feature, add a "Refinement" label to the story and link it back to the original epic/story if possible.
 
 ## Handoff
 
@@ -92,6 +91,19 @@ When stories are prepared, hand off to:
 - **bmad-dev** for implementation (only stories with Status == Approved)
 - **bmad-tester** for test strategy based on story scope
 - **bmad-pm** if stories reveal PRD gaps
+
+## Project Resources
+
+### Dynamic Resource Discovery
+Before executing tasks, research the project for applicable rules, skills, and workflows to ensure alignment with the tech stack and project standards:
+- **Rules**: Search `.agent/rules/` for tech-stack standards (e.g., Docker, Streamlit, Repository structure).
+- **Skills**: Search `.agent/skills/` for specialized technical guidance.
+- **Workflows**: Search `.agent/workflows/` for operational procedures and lifecycle automation.
+
+### Mandatory Compliance
+- All commands MUST run inside the container via `./dc.sh exec` (refer to Docker rules found in `.agent/rules/`).
+- Follow the established repository layout (refer to Repo Structure rules).
+- Apply Streamlit-specific performance patterns (refer to Streamlit Best Practices).
 
 ## Related Rules
 - BMAD Team @bmad-team.md

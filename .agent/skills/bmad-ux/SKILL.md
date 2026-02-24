@@ -91,5 +91,18 @@ When UX specification is complete, hand off to:
 - **bmad-dev** for implementation guided by UX specs
 - **bmad-architect** if technical constraints require design revision
 
+## Project Resources
+
+### Dynamic Resource Discovery
+Before executing tasks, research the project for applicable rules, skills, and workflows to ensure alignment with the tech stack and project standards:
+- **Rules**: Search `.agent/rules/` for tech-stack standards (e.g., Docker, Streamlit, Repository structure).
+- **Skills**: Search `.agent/skills/` for specialized technical guidance.
+- **Workflows**: Search `.agent/workflows/` for operational procedures and lifecycle automation.
+
+### Mandatory Compliance
+- All commands MUST run inside the container via `./dc.sh exec` (refer to Docker rules found in `.agent/rules/`).
+- Follow the established repository layout (refer to Repo Structure rules).
+- Apply Streamlit-specific performance patterns (refer to Streamlit Best Practices).
+
 ## Related Rules
 - BMAD Team @bmad-team.md

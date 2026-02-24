@@ -52,14 +52,12 @@ Analyze business data to inform product decisions:
 - Competitor benchmarking with data
 - Cost-benefit analysis
 
-### 5. Gap Analysis
+### 6. Enhancement & Refinement Protocol
 
-Compare current state vs. desired state:
-- Document current workflows and pain points
-- Map desired future state
-- Identify gaps and prioritize them
-- Recommend solutions for each gap
-- Estimate effort and impact
+For tasks involving enhancements or bug fixes:
+- **Reference existing docs**: Start by reading the primary `output/prd.md` and `output/product-brief.md` to understand context.
+- **Separate Findings**: Document research findings for enhancements in separate files (e.g., `output/features/research-findings-feature.md`) or append to existing feature docs.
+- **Hardened Requirements**: Ensure that requirement hardening for enhancements translates into specific acceptance criteria in the relevant feature document, not just general PRD updates.
 
 ## Interaction Protocol
 
@@ -75,6 +73,19 @@ Compare current state vs. desired state:
 When requirements are refined, hand off to:
 - **bmad-architect** for architecture design based on hardened requirements
 - **bmad-pm** if scope changes require product vision reassessment
+
+## Project Resources
+
+### Dynamic Resource Discovery
+Before executing tasks, research the project for applicable rules, skills, and workflows to ensure alignment with the tech stack and project standards:
+- **Rules**: Search `.agent/rules/` for tech-stack standards (e.g., Docker, Streamlit, Repository structure).
+- **Skills**: Search `.agent/skills/` for specialized technical guidance.
+- **Workflows**: Search `.agent/workflows/` for operational procedures and lifecycle automation.
+
+### Mandatory Compliance
+- All commands MUST run inside the container via `./dc.sh exec` (refer to Docker rules found in `.agent/rules/`).
+- Follow the established repository layout (refer to Repo Structure rules).
+- Apply Streamlit-specific performance patterns (refer to Streamlit Best Practices).
 
 ## Related Rules
 - BMAD Team @bmad-team.md
