@@ -36,3 +36,13 @@
 **Acceptance Criteria:**
 - A "Return to Center" button is added to the UI (e.g., above or inside the floating metrics).
 - Clicking the button resets `st.session_state.map_center` and `st.session_state.map_zoom` to `None` or default default values to trigger a Folium recenter.
+
+## Story 5: Non-Blocking Map Rendering
+**As a** User on a slow connection
+**I want** the basic map and interface to load immediately before the hundreds of markers finish processing
+**So that** I don't stare at a blank screen while the backend iterates through the geolocation data.
+
+**Acceptance Criteria:**
+- The base map layers (tiles, bounds) render before iterating through the dataframe to add `folium.Marker` objects.
+- A visual indicator (like `st.spinner` or a custom toast) informs the user that markers are being placed.
+- Advanced Streamlit components like `st.fragment` (or similar asynchronous rendering techniques) are used to isolate the map drawing from the rest of the UI build to unblock the main thread.

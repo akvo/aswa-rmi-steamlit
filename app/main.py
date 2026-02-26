@@ -85,63 +85,70 @@ def main():
             st.rerun()
 
     # 2. Map Layer
-    map_df = get_map_data(filtered_df)
-    map_key = "health_map_main"
-    with st.spinner("Updating Markers..."):
+    @st.fragment
+    def render_map_layer():
+        map_placeholder = st.empty()
+        map_placeholder.markdown(
+            "<div class='skeleton-loader'>Loading Map Data...</div>",
+            unsafe_allow_html=True,
+        )
+
+        map_df = get_map_data(filtered_df)
+        map_key = "health_map_main"
+
         map_data = render_map(
             map_df,
             key=map_key,
             center=st.session_state.map_center,
             zoom=st.session_state.map_zoom,
         )
+        map_placeholder.empty()
 
-    # Capture map state for persistence across version resets
-    if map_data:
-        if "center" in map_data:
-            st.session_state.map_center = [
-                map_data["center"]["lat"],
-                map_data["center"]["lng"],
-            ]
-        if "zoom" in map_data:
-            st.session_state.map_zoom = map_data["zoom"]
+        # Capture map state for persistence across version resets
+        if map_data:
+            if "center" in map_data:
+                st.session_state.map_center = [
+                    map_data["center"]["lat"],
+                    map_data["center"]["lng"],
+                ]
+            if "zoom" in map_data:
+                st.session_state.map_zoom = map_data["zoom"]
 
-    # 3. Handle Marker Clicks (Direct Interaction)
-    if map_data and map_data.get("last_object_clicked_tooltip"):
-        clicked_name = map_data["last_object_clicked_tooltip"]
+        # 3. Handle Marker Clicks (Direct Interaction)
+        if map_data and map_data.get("last_object_clicked_tooltip"):
+            clicked_name = map_data["last_object_clicked_tooltip"]
 
-        # Streamlit-Folium doesn't trigger a new event if the user clicks the
-        # EXACT same marker twice in a row, because
-        # `last_object_clicked_tooltip` doesn't change. However, it DOES
-        # trigger a map background click if we click away, OR if they click
-        # the same marker, we can check if they actually interacted with the
-        # map. Let's check `last_clicked` (the raw {lat, lng} click event).
+            # Only open if it's NOT what we just closed and NOT already open
+            if clicked_name == st.session_state.get("ignored_center"):
+                pass
+            elif clicked_name != st.session_state.get("detail_center"):
+                st.session_state.detail_center = clicked_name
+                st.session_state.last_clicked_center = clicked_name
+                st.session_state.ignored_center = None
+                # Force modal open for Click triggers
+                Modal(
+                    title=f"Details: {clicked_name}",
+                    key=f"modal_{clicked_name}",
+                ).open()
+                st.rerun()
 
-        # If the user clicks the background, "last_clicked" updates but the
-        # tooltip remains the old one. We can detect this!
+        if map_data and map_data.get("last_clicked"):
+            # If the user interacts with the map (clicks anything), we check
+            # if they clicked the background. If so, we can clear the ignored
+            # state so they can re-click the marker. It's not perfect
+            # (doesn't fix double-clicking exactly), but it helps.
 
-        # Only open if it's NOT what we just closed and NOT already open
-        if clicked_name == st.session_state.get("ignored_center"):
+            # If they close the modal, and then click the marker again, the
+            # ONLY THING that happens is browser thinks the tooltip is the same
             pass
-        elif clicked_name != st.session_state.get("detail_center"):
-            st.session_state.detail_center = clicked_name
-            st.session_state.last_clicked_center = clicked_name
+        else:
             st.session_state.ignored_center = None
-            # Force modal open for Click triggers
-            Modal(title=f"Details: {clicked_name}", key=f"modal_{clicked_name}").open()
-            st.rerun()
+            st.session_state.last_clicked_center = None
 
-    if map_data and map_data.get("last_clicked"):
-        # If the user interacts with the map (clicks anything), we check if
-        # they clicked the background. If so, we can clear the ignored
-        # state so they can re-click the marker. It's not perfect
-        # (doesn't fix double-clicking exactly), but it helps.
+    # Call the fragment
+    render_map_layer()
 
-        # If they close the modal, and then click the marker again, the ONLY
-        # THING that happens is the browser thinks the tooltip is the same.
-        pass
-    else:
-        st.session_state.ignored_center = None
-        st.session_state.last_clicked_center = None
+    # Fragment ends here
 
     # --- DEBUG DASHBOARD (Commented out for production) ---
     # with st.expander("🔍 Debugging: State & Map Data", expanded=False):

@@ -69,6 +69,29 @@ def inject_full_screen_css():
                 margin-bottom: 0.25rem;
                 color: #475569; /* Slate-600 */
             }
+
+            /* Loading Skeleton Pulse */
+            @keyframes pulse {
+                0%, 100% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: .5;
+                }
+            }
+            .skeleton-loader {
+                animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+                background-color: #e2e8f0;
+                border-radius: 0.5rem;
+                height: 400px; /* Base placeholder height */
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #64748b;
+                font-weight: 500;
+                border: 2px dashed #cbd5e1;
+            }
         </style>
         """,
         unsafe_allow_html=True,
