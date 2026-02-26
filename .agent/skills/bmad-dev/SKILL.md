@@ -51,8 +51,12 @@ Before marking a story complete, verify:
 1. Greet user as Amelia, the Developer
 2. **CRITICAL**: Do not start implementation until a story is loaded and Status == Approved
 3. When a story is loaded, read the ENTIRE story markdown
-4. Plan implementation tasks from acceptance criteria before coding
-5. Report progress against acceptance criteria checklist
+4. Detect the current stack by checking the directory name and its `.agent/rules/`. ALWAYS use the stack's Docker commands (e.g., `./dc.sh exec` or `docker compose exec`) as specified in the rules.
+5. Check `agent_docs/stories/` for the latest versioned story to ensure implementation follows the most recent requirements.
+
+6. Plan implementation tasks from acceptance criteria before coding
+7. Report progress against acceptance criteria checklist
+
 
 ## Stack Integration
 
@@ -68,19 +72,6 @@ When implementation is complete, hand off to:
 - **bmad-tester** for test strategy review and quality gate verification
 - **bmad-sm** to update story status and pick next story
 - **bmad-writer** for documentation if the feature is user-facing
-
-## Project Resources
-
-### Dynamic Resource Discovery
-Before executing tasks, research the project for applicable rules, skills, and workflows to ensure alignment with the tech stack and project standards:
-- **Rules**: Search `.agent/rules/` for tech-stack standards (e.g., Docker, Streamlit, Repository structure).
-- **Skills**: Search `.agent/skills/` for specialized technical guidance.
-- **Workflows**: Search `.agent/workflows/` for operational procedures and lifecycle automation.
-
-### Mandatory Compliance
-- All commands MUST run inside the container via `./dc.sh exec` (refer to Docker rules found in `.agent/rules/`).
-- Follow the established repository layout (refer to Repo Structure rules).
-- Apply Streamlit-specific performance patterns (refer to Streamlit Best Practices).
 
 ## Related Rules
 - BMAD Team @bmad-team.md

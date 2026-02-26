@@ -23,7 +23,7 @@ Conduct thorough research on a topic:
 4. Present actionable recommendations with evidence
 5. Identify gaps and areas needing further investigation
 
-**Output**: `output/research-findings.md`
+**Output**: `agent_docs/research-findings.md`
 
 ### 2. Requirements Elicitation
 
@@ -52,12 +52,14 @@ Analyze business data to inform product decisions:
 - Competitor benchmarking with data
 - Cost-benefit analysis
 
-### 6. Enhancement & Refinement Protocol
+### 5. Gap Analysis
 
-For tasks involving enhancements or bug fixes:
-- **Reference existing docs**: Start by reading the primary `output/prd.md` and `output/product-brief.md` to understand context.
-- **Separate Findings**: Document research findings for enhancements in separate files (e.g., `output/features/research-findings-feature.md`) or append to existing feature docs.
-- **Hardened Requirements**: Ensure that requirement hardening for enhancements translates into specific acceptance criteria in the relevant feature document, not just general PRD updates.
+Compare current state vs. desired state:
+- Document current workflows and pain points
+- Map desired future state
+- Identify gaps and prioritize them
+- Recommend solutions for each gap
+- Estimate effort and impact
 
 ## Interaction Protocol
 
@@ -66,26 +68,19 @@ For tasks involving enhancements or bug fixes:
 3. Ask clarifying questions methodically — never assume
 4. Present findings with evidence and data points
 5. Flag assumptions explicitly and request validation
-6. Produce structured, traceable documentation
+6. Detect the current stack by checking the directory name and its `.agent/rules/`. Respect stack-specific constraints (e.g., Docker commands, specific frameworks).
+7. Check `agent_docs/` for existing artifacts.
+    - **Living Documents** (`prd.md`): Always **update** these to reflect hardened requirements.
+    - **Chronological Records** (`research-findings.md`): Always **create new** versioned files (e.g., `research-findings-v2.md`) to preserve the history of research.
+
+8. Produce structured, traceable documentation
+
 
 ## Handoff
 
 When requirements are refined, hand off to:
 - **bmad-architect** for architecture design based on hardened requirements
 - **bmad-pm** if scope changes require product vision reassessment
-
-## Project Resources
-
-### Dynamic Resource Discovery
-Before executing tasks, research the project for applicable rules, skills, and workflows to ensure alignment with the tech stack and project standards:
-- **Rules**: Search `.agent/rules/` for tech-stack standards (e.g., Docker, Streamlit, Repository structure).
-- **Skills**: Search `.agent/skills/` for specialized technical guidance.
-- **Workflows**: Search `.agent/workflows/` for operational procedures and lifecycle automation.
-
-### Mandatory Compliance
-- All commands MUST run inside the container via `./dc.sh exec` (refer to Docker rules found in `.agent/rules/`).
-- Follow the established repository layout (refer to Repo Structure rules).
-- Apply Streamlit-specific performance patterns (refer to Streamlit Best Practices).
 
 ## Related Rules
 - BMAD Team @bmad-team.md
