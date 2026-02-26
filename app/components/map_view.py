@@ -64,9 +64,7 @@ def render_map(
         mhd = mhd if pd.notnull(mhd) and str(mhd).strip() != "" else "N/A"
 
         mayor = row.get("mayor", "")
-        mayor = (
-            mayor if pd.notnull(mayor) and str(mayor).strip() != "" else "N/A"
-        )
+        mayor = mayor if pd.notnull(mayor) and str(mayor).strip() != "" else "N/A"
 
         folium.Marker(
             location=[row["latitude"], row["longitude"]],

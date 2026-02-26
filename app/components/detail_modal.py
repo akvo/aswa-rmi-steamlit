@@ -25,8 +25,6 @@ def render_detail_modal(df: pd.DataFrame, center_name: str):
         if st.session_state.get("detail_center"):
             st.session_state.ignored_center = st.session_state.detail_center
         st.session_state.detail_center = None
-        # Increment map version to clear selection in Folium
-        st.session_state.map_version += 1
         # Clear query params to prevent URL re-trigger
         st.query_params.pop("selected_center", None)
         st.rerun()
@@ -128,7 +126,8 @@ def render_detail_modal(df: pd.DataFrame, center_name: str):
                     "font-weight: 600; text-transform: uppercase; "
                     "letter-spacing: 0.5px;'>👥 Personnel</div>"
                     "<div style='font-size: 1.0rem; color: #1f2937; "
-                    f"margin-top: 0.2rem; line-height: 1.4;'>{staff_html}</div>"
+                    "margin-top: 0.2rem; line-height: 1.4;'>"
+                    f"{staff_html}</div>"
                     "</div>",
                     unsafe_allow_html=True,
                 )
@@ -143,9 +142,7 @@ def render_detail_modal(df: pd.DataFrame, center_name: str):
         with tab_overview:
             # Metrics
             latest_score = latest["score"]
-            prev_score = (
-                center_df.iloc[-2]["score"] if len(center_df) > 1 else None
-            )
+            prev_score = center_df.iloc[-2]["score"] if len(center_df) > 1 else None
 
             m_col1, m_col2 = st.columns(2)
             with m_col1:
@@ -172,7 +169,8 @@ def render_detail_modal(df: pd.DataFrame, center_name: str):
                             else "#ef4444" if delta < 0 else "#6b7280"
                         )
                         st.markdown(
-                            "<div style='display: flex; flex-direction: column; "
+                            "<div style='display: flex; "
+                            "flex-direction: column; "
                             "justify-content: center; align-items: center; "
                             "height: 90px;'>"
                             "<div style='font-size: 1.1rem; color: #6c757d; "
@@ -185,7 +183,8 @@ def render_detail_modal(df: pd.DataFrame, center_name: str):
                         )
                     else:
                         st.markdown(
-                            "<div style='display: flex; flex-direction: column; "
+                            "<div style='display: flex; "
+                            "flex-direction: column; "
                             "justify-content: center; align-items: center; "
                             "height: 90px;'>"
                             "<div style='font-size: 1.1rem; color: #6c757d; "
@@ -203,9 +202,7 @@ def render_detail_modal(df: pd.DataFrame, center_name: str):
         with tab_history:
             st.markdown("#### Detailed Logs")
             st.dataframe(
-                center_df[
-                    ["date", "score", "health_assistans", "mayor"]
-                ].rename(
+                center_df[["date", "score", "health_assistans", "mayor"]].rename(
                     columns={
                         "date": "Date",
                         "score": "Score",
@@ -225,8 +222,6 @@ def render_detail_modal(df: pd.DataFrame, center_name: str):
         ):
             st.session_state.ignored_center = center_name
             st.session_state.detail_center = None
-            # Increment map version to clear selection in Folium
-            st.session_state.map_version += 1
             # Clear query params to prevent URL re-trigger
             st.query_params.pop("selected_center", None)
             st.rerun()

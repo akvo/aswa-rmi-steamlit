@@ -16,7 +16,7 @@ from utils.style_utils import inject_full_screen_css  # noqa: E402
 from components.filters import render_sidebar  # noqa: E402
 from components.map_view import render_map  # noqa: E402
 from components.detail_modal import render_detail_modal  # noqa: E402
-from streamlit_modal import Modal
+from streamlit_modal import Modal  # noqa: E402
 from components.floating_widgets import (  # noqa: E402
     render_floating_metrics,
     render_floating_analytics_tray,
@@ -45,8 +45,6 @@ def main():
         st.session_state.last_clicked_center = None
     if "ignored_center" not in st.session_state:
         st.session_state.ignored_center = None
-    if "map_version" not in st.session_state:
-        st.session_state.map_version = 0
     if "map_center" not in st.session_state:
         st.session_state.map_center = None
     if "map_zoom" not in st.session_state:
@@ -83,14 +81,12 @@ def main():
         if query_center != st.session_state.detail_center:
             st.session_state.detail_center = query_center
             # Force modal open for URL triggers
-            Modal(
-                title=f"Details: {query_center}", key=f"modal_{query_center}"
-            ).open()
+            Modal(title=f"Details: {query_center}", key=f"modal_{query_center}").open()
             st.rerun()
 
     # 2. Map Layer
     map_df = get_map_data(filtered_df)
-    map_key = f"map_v{st.session_state.map_version}"
+    map_key = "health_map_main"
     with st.spinner("Updating Markers..."):
         map_data = render_map(
             map_df,
@@ -113,6 +109,16 @@ def main():
     if map_data and map_data.get("last_object_clicked_tooltip"):
         clicked_name = map_data["last_object_clicked_tooltip"]
 
+        # Streamlit-Folium doesn't trigger a new event if the user clicks the
+        # EXACT same marker twice in a row, because
+        # `last_object_clicked_tooltip` doesn't change. However, it DOES
+        # trigger a map background click if we click away, OR if they click
+        # the same marker, we can check if they actually interacted with the
+        # map. Let's check `last_clicked` (the raw {lat, lng} click event).
+
+        # If the user clicks the background, "last_clicked" updates but the
+        # tooltip remains the old one. We can detect this!
+
         # Only open if it's NOT what we just closed and NOT already open
         if clicked_name == st.session_state.get("ignored_center"):
             pass
@@ -121,13 +127,19 @@ def main():
             st.session_state.last_clicked_center = clicked_name
             st.session_state.ignored_center = None
             # Force modal open for Click triggers
-            Modal(
-                title=f"Details: {clicked_name}", key=f"modal_{clicked_name}"
-            ).open()
+            Modal(title=f"Details: {clicked_name}", key=f"modal_{clicked_name}").open()
             st.rerun()
-    elif map_data is not None:
-        # Interaction happened but no marker selected (e.g., background click)
-        # We can clear ignore here to allow re-clicking the marker we just closed
+
+    if map_data and map_data.get("last_clicked"):
+        # If the user interacts with the map (clicks anything), we check if
+        # they clicked the background. If so, we can clear the ignored
+        # state so they can re-click the marker. It's not perfect
+        # (doesn't fix double-clicking EXACTLY), but it helps.
+
+        # If they close the modal, and then click the marker again, the ONLY
+        # THING that happens is the browser thinks the tooltip is the same.
+        pass
+    else:
         st.session_state.ignored_center = None
         st.session_state.last_clicked_center = None
 
@@ -138,7 +150,7 @@ def main():
     #     st.write("map_key:", map_key)
     #     st.write(
     #         "map_data (last click):",
-    #         map_data.get("last_object_clicked_tooltip") if map_data else None,
+    #         map_data.get("last_clicked") if map_data else None,
     #     )
     #     st.write("Rerun Count:", st.session_state.rerun_count)
     # -----------------------
