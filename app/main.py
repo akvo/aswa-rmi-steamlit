@@ -81,28 +81,25 @@ def main():
         if query_center != st.session_state.detail_center:
             st.session_state.detail_center = query_center
             # Force modal open for URL triggers
-            Modal(title=f"Details: {query_center}", key=f"modal_{query_center}").open()
+            Modal(
+                title=f"Details: {query_center}",
+                key=f"modal_{query_center}",
+            ).open()
             st.rerun()
 
     # 2. Map Layer
     @st.fragment
     def render_map_layer():
-        map_placeholder = st.empty()
-        map_placeholder.markdown(
-            "<div class='skeleton-loader'>Loading Map Data...</div>",
-            unsafe_allow_html=True,
-        )
-
         map_df = get_map_data(filtered_df)
         map_key = "health_map_main"
 
-        map_data = render_map(
-            map_df,
-            key=map_key,
-            center=st.session_state.map_center,
-            zoom=st.session_state.map_zoom,
-        )
-        map_placeholder.empty()
+        with st.spinner("Loading health center locations..."):
+            map_data = render_map(
+                map_df,
+                key=map_key,
+                center=st.session_state.map_center,
+                zoom=st.session_state.map_zoom,
+            )
 
         # Capture map state for persistence across version resets
         if map_data:
