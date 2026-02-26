@@ -9,7 +9,7 @@ A comprehensive, geospatial health management system for the Republic of the Mar
 - **Health Assistants**: To track their facility's performance over time.
 
 ## 3. Core Features
-- **Map Interface**: A Folium-based visualization of all health centers with color-coded markers based on performance scores.
+- **Map Interface**: A Folium-based visualization of all health centers with color-coded markers based on performance scores. Includes a 'Return to Center' control for quick map reset.
 - **Interactive Metrics**: High-level KPIs (Total Centers, Average Score, Data Quality indicators) overlaid on the map.
 - **Filtering System**: Sidebar filters for Island and Health Center Type.
 - **Detail Drilldown**: A comprehensive modal (or drawer) for facility-specific analytics, including historical trends and personnel logs.

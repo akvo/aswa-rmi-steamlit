@@ -1,7 +1,49 @@
 import folium
+from branca.element import Template, MacroElement
 from streamlit_folium import st_folium
 import pandas as pd
 import streamlit as st
+
+
+class ResetViewControl(MacroElement):
+    """Adds a custom Leaflet control button to reset map view."""
+
+    def __init__(self, lat, lon, zoom):
+        super().__init__()
+        self._template = Template(
+            """
+            {% macro script(this, kwargs) %}
+                var resetBtn = L.control({position: 'topleft'});
+                resetBtn.onAdd = function (map) {
+                    var div = L.DomUtil.create(
+                        'div',
+                        'leaflet-bar leaflet-control leaflet-control-custom'
+                    );
+                    div.style.backgroundColor = 'white';
+                    div.style.width = '34px';
+                    div.style.height = '34px';
+                    div.style.cursor = 'pointer';
+                    div.style.display = 'flex';
+                    div.style.justifyContent = 'center';
+                    div.style.alignItems = 'center';
+                    div.innerHTML = "<span title='Return to Center' " +
+                                    "style='font-size: 18px;'>📍</span>";
+                    div.onclick = function(e) {
+                        e.preventDefault();
+                        map.setView(["""
+            + str(lat)
+            + """, """
+            + str(lon)
+            + """], """
+            + str(zoom)
+            + """);
+                    }
+                    return div;
+                };
+                resetBtn.addTo({{ this._parent.get_name() }});
+            {% endmacro %}
+            """
+        )
 
 
 def render_map(
@@ -71,6 +113,9 @@ def render_map(
             tooltip=row["healt_centre"],
             icon=folium.Icon(color=color, icon="info-sign"),
         ).add_to(m)
+
+    # Add custom Return to Center control
+    m.add_child(ResetViewControl(default_lat, default_lon, 6))
 
     # Render map
     output = st_folium(

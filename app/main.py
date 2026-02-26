@@ -134,7 +134,7 @@ def main():
         # If the user interacts with the map (clicks anything), we check if
         # they clicked the background. If so, we can clear the ignored
         # state so they can re-click the marker. It's not perfect
-        # (doesn't fix double-clicking EXACTLY), but it helps.
+        # (doesn't fix double-clicking exactly), but it helps.
 
         # If they close the modal, and then click the marker again, the ONLY
         # THING that happens is the browser thinks the tooltip is the same.

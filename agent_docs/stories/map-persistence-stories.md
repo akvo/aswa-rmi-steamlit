@@ -27,3 +27,12 @@
 **Acceptance Criteria:**
 - `ignored_center` logic is verified and optimized.
 - Closing the modal resets `detail_center` in session state.
+
+## Story 4: Return to Map Center
+**As a** User
+**I want** a dedicated button to return the map to its default center and zoom level
+**So that** I can easily view the entire country again after inspecting specific islands or markers.
+
+**Acceptance Criteria:**
+- A "Return to Center" button is added to the UI (e.g., above or inside the floating metrics).
+- Clicking the button resets `st.session_state.map_center` and `st.session_state.map_zoom` to `None` or default default values to trigger a Folium recenter.
