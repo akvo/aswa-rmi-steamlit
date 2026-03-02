@@ -17,8 +17,22 @@ def inject_full_screen_css():
             }
 
             /* Hide Streamlit header and footer */
-            header {visibility: hidden;}
+            header[data-testid="stHeader"] {
+                visibility: hidden;
+            }
             footer {visibility: hidden;}
+
+            /* Hide the sidebar COLLAPSE button (the "X" or "<<" button) */
+            [data-testid="stSidebar"]
+            button[data-testid="stBaseButton-headerNoPadding"] {
+                display: none !important;
+            }
+
+            /* Keep the EXPAND button visible (the ">" or ">>" button)
+               so users can always reopen it if it starts collapsed */
+            [data-testid="collapsedControl"] {
+                display: block !important;
+            }
 
             /* Remove padding from the main block-container */
             .main .block-container, .stMainBlockContainer {
