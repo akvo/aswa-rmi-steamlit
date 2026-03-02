@@ -3,21 +3,21 @@ import sys
 import streamlit as st
 import urllib.parse
 
-# Add the current directory to sys.path
-sys.path.append(os.path.dirname(__file__))
+# Add 'app' directory to sys.path to maintain import compatibility
+sys.path.append(os.path.join(os.path.dirname(__file__), "app"))
 
 # Local imports
-from utils.data_loader import (  # noqa: E402
+from app.utils.data_loader import (  # noqa: E402
     load_data,
     get_map_data,
     get_missing_geodata_count,
 )
-from utils.style_utils import inject_full_screen_css  # noqa: E402
-from components.filters import render_sidebar  # noqa: E402
-from components.map_view import render_map  # noqa: E402
-from components.detail_modal import render_detail_modal  # noqa: E402
+from app.utils.style_utils import inject_full_screen_css  # noqa: E402
+from app.components.filters import render_sidebar  # noqa: E402
+from app.components.map_view import render_map  # noqa: E402
+from app.components.detail_modal import render_detail_modal  # noqa: E402
 from streamlit_modal import Modal  # noqa: E402
-from components.floating_widgets import (  # noqa: E402
+from app.components.floating_widgets import (  # noqa: E402
     render_floating_metrics,
     render_floating_analytics_tray,
 )
